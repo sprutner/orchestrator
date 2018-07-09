@@ -5,12 +5,13 @@ EXPOSE 3000
 ENV GOPATH=/tmp/go
 
 RUN set -ex \
-    && apk add --update --no-cache bash \
+    && apk add --update --no-cache bash py-pip \
     && apk add --update --no-cache --virtual .build-deps \
         rsync \
         git \
         go \
         build-base \
+    && pip install awscli \
     && cd /tmp \
     && { go get -d github.com/github/orchestrator ; : ; } \
     && cd $GOPATH/src/github.com/github/orchestrator \
@@ -23,4 +24,5 @@ RUN set -ex \
 
 WORKDIR /usr/local/orchestrator
 ADD docker/entrypoint.sh /entrypoint.sh
+ADD script/kms-decrypt /kms-decrypt
 CMD /entrypoint.sh
