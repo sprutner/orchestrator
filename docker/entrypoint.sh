@@ -15,13 +15,7 @@ cat <<EOF > /etc/orchestrator.conf.json
 EOF
 fi
 
-# if [ "$USE_KMS" = "negative" ] ; then
-#   export SQL_PW=$(/kms-decrypt -s $SQL_KMS_SECRET )
-#   sed -i 's/PLACEHOLDER/$SQL_PW' /usr/local/orchestrator/orchestrator.conf.json
-# fi
-
-# if [ -v SQL_USER_PASSWORD ] ; then
-sed -i 's/"PLACEHOLDER",/$SQL_PW/' /usr/local/orchestrator/orchestrator.conf.json
-# fi
+# Grab SQL Password out of KMS
+export ORCHESTRATOR_PASSWORD=$(/kms-decrypt -s $SQL_KMS_SECRET )
 
 exec /usr/local/orchestrator/orchestrator http
